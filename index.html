@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Viral Hashtag Generator</title>
+
+    <style>
+        /* --- Global Styles & Fonts (Blogger Safe) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap');
+
+        :root {
+            --primary-color: #ff3cac;
+            --secondary-color: #784ba0;
+            --accent-color: #2b86c5;
+            --bg-color-start: #667eea;
+            --bg-color-end: #764ba2;
+            --text-color: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-hover-bg: rgba(255, 255, 255, 0.2);
+            --border-color: rgba(255, 255, 255, 0.25);
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --success-color: #4CAF50;
+            --premium-star-color: #FFD700;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+            background-size: 400% 400%;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+            overflow-x: hidden;
+            animation: gradientAnimation 15s ease infinite;
+        }
+        
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 var(--shadow-color);
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-right: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        #premium-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: var(--premium-star-color);
+            cursor: pointer;
+            transition: transform 0.3s ease, text-shadow 0.3s ease;
+        }
+        
+        #premium-icon:hover {
+            transform: scale(1.2) rotate(15deg);
+            text-shadow: 0 0 15px var(--premium-star-color);
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: center;
+        }
+        
+        .input-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .keyword-platform-wrapper {
+            display: grid;
+            grid-template-columns: 3fr 2fr;
+            gap: 1rem;
+        }
+
+        #keyword-input, #platform-select {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            color: var(--text-color);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        #keyword-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+
+        #keyword-input:focus, #platform-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(255, 60, 172, 0.3);
+        }
+
+        #platform-select option {
+            background: var(--bg-color-end);
+            color: var(--text-color);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        #generate-btn {
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            box-shadow: 0 4px 15px 0 rgba(255, 60, 172, 0.4);
+            grid-column: 2 / 3;
+            grid-row: 1 / 3;
+            height: 100%;
+        }
+
+        #generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px 0 rgba(255, 60, 172, 0.6);
+            filter: brightness(1.1);
+        }
+
+        .copy-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .copy-btn { background-color: var(--accent-color); }
+        
+        #usage-counter {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        #results-container {
+            margin-top: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        #results-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-header h2 { font-weight: 600; margin: 0; }
+        
+        #char-counter {
+            font-size: 0.9rem;
+            font-weight: 300;
+            opacity: 0.8;
+            background: var(--card-bg);
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+
+        #hashtags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .hashtag-card {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--card-hover-bg);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            animation: popIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        .hashtag-card:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .hashtag-card input[type="checkbox"] {
+            -webkit-appearance: none; appearance: none;
+            background-color: transparent; margin: 0;
+            color: currentColor; width: 1.15em; height: 1.15em;
+            border: 0.15em solid currentColor; border-radius: 0.25em;
+            display: grid; place-content: center; flex-shrink: 0;
+        }
+
+        .hashtag-card input[type="checkbox"]::before {
+            content: ""; width: 0.65em; height: 0.65em;
+            transform: scale(0); transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em var(--primary-color);
+            transform-origin: bottom left;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        .hashtag-card input[type="checkbox"]:checked::before { transform: scale(1); }
+        .hashtag-card label { font-size: 0.95rem; word-break: break-all; cursor: pointer; }
+        .note { text-align: center; font-size: 0.85rem; margin-top: 1.5rem; opacity: 0.7; }
+        
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); display: flex;
+            justify-content: center; align-items: center; z-index: 1000;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.visible { opacity: 1; visibility: visible; }
+        .modal-content {
+            background: linear-gradient(135deg, var(--bg-color-end), var(--bg-color-start));
+            padding: 2rem 3rem; border-radius: 15px; text-align: center;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.4); transform: scale(0.9);
+            transition: transform 0.3s ease; max-width: 90%; width: 500px;
+            position: relative;
+        }
+        .modal-overlay.visible .modal-content { transform: scale(1); }
+        .modal-content h3 { font-size: 1.8rem; margin-bottom: 1rem; color: var(--premium-star-color); }
+        .modal-content p { margin-bottom: 1.5rem; line-height: 1.6; }
+        .modal-close-btn {
+            position: absolute; top: 15px; right: 15px;
+            font-size: 2rem; color: white; cursor: pointer;
+            line-height: 1; transition: transform 0.2s;
+        }
+        .modal-close-btn:hover { transform: scale(1.2); }
+        
+        .toast {
+            position: fixed; bottom: -100px; left: 50%;
+            transform: translateX(-50%); background-color: var(--success-color);
+            color: white; padding: 12px 25px; border-radius: 25px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-weight: 600;
+            transition: bottom 0.5s ease-in-out; z-index: 2000;
+        }
+        .toast.show { bottom: 30px; }
+
+        .app-footer {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 2rem;
+            text-align: center;
+        }
+        .ad-container {
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            min-height: 100px; /* Placeholder height for ad */
+        }
+        .footer-credit { font-size: 0.9rem; opacity: 0.7; }
+        .footer-credit a {
+            color: var(--text-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-credit a:hover {
+            color: var(--primary-color);
+        }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+        @media (max-width: 768px) {
+            body { padding: 1rem 0.5rem; }
+            .container { padding: 1.5rem; margin: 0 0.5rem; }
+            header h1 { font-size: 2rem; }
+            header { padding-right: 0; }
+            .input-section { grid-template-columns: 1fr; }
+            #generate-btn { grid-column: 1 / 2; grid-row: auto; width: 100%; margin-top: 0.5rem; }
+            .keyword-platform-wrapper { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 480px) {
+            #hashtags-grid { grid-template-columns: 1fr; }
+            .copy-buttons { flex-direction: column; }
+            .modal-content { padding: 2rem 1.5rem; }
+            #premium-icon { top: 15px; right: 15px; font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Viral Hashtag Generator</h1>
+            <p>Enter a keyword to get viral hashtags for your social media.</p>
+        </header>
+
+        <div id="premium-icon" title="Get Premium">★</div>
+
+        <main>
+            <div class="input-section">
+                <div class="input-wrapper">
+                    <div class="keyword-platform-wrapper">
+                        <input type="text" id="keyword-input" placeholder="e.g., 'digital marketing'" />
+                        <select id="platform-select">
+                            <option value="instagram">Instagram</option>
+                            <option value="tiktok">TikTok</option>
+                            <option value="x">X (Twitter)</option>
+                            <option value="youtube">YouTube</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="threads">Threads</option>
+                        </select>
+                    </div>
+                     <div id="usage-counter">20/20 uses left today</div>
+                </div>
+                <button id="generate-btn" class="btn">Generate</button>
+            </div>
+
+            <div id="results-container">
+                <div class="results-header">
+                    <h2>Generated Hashtags</h2>
+                    <span id="char-counter"></span>
+                </div>
+                <div id="hashtags-grid"></div>
+                <div class="copy-buttons">
+                    <button id="copy-selected-btn" class="btn copy-btn">Copy Selected</button>
+                    <button id="copy-all-btn" class="btn copy-btn">Copy All</button>
+                </div>
+                <p class="note">You can copy and paste hashtags on any social media platform.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="limit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close-btn" data-modal="limit-modal">&times;</span>
+            <h3>Free Limit Reached!</h3>
+            <p>You have used all your free generations for today. Please try again tomorrow or upgrade for unlimited access.</p>
+            <button class="btn" data-modal="limit-modal">Got it</button>
+        </div>
+    </div>
+    <div id="premium-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close-btn" data-modal="premium-modal">&times;</span>
+            <h3>✨ Unlock Premium Features! ✨</h3>
+            <p>To get the premium version with unlimited usage and advanced features, please contact us:</p>
+            <p><strong>Whatsapp:</strong> +8801945220851<br/>
+               <strong>Email:</strong> infoplaxora@gmail.com</p>
+        </div>
+    </div>
+    <div id="copy-toast" class="toast"></div>
+    
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="ad-container">
+            <!-- Native Banner Ad Code -->
+            <script async="async" data-cfasync="false" src="//pl27005060.profitableratecpm.com/c809c87dc250c2c46329a7547968100b/invoke.js"></script>
+            <div id="container-c809c87dc250c2c46329a7547968100b"></div>
+        </div>
+        <p class="footer-credit">A Product by <a href="http://plaxora.free.nf/" target="_blank">Plaxora</a></p>
+    </footer>
+
+    <!-- Notification Ad Code -->
+    <script type='text/javascript' src='//pl27005052.profitableratecpm.com/03/b7/9b/03b79bd76b1ba1796cb838a6b30fd9fe.js'></script>
+    
+    <script>
+    //<![CDATA[
+    document.addEventListener('DOMContentLoaded', () => {
+        const keywordInput = document.getElementById('keyword-input');
+        const platformSelect = document.getElementById('platform-select');
+        const generateBtn = document.getElementById('generate-btn');
+        const usageCounterEl = document.getElementById('usage-counter');
+        const resultsContainer = document.getElementById('results-container');
+        const hashtagsGrid = document.getElementById('hashtags-grid');
+        const charCounterEl = document.getElementById('char-counter');
+        const copySelectedBtn = document.getElementById('copy-selected-btn');
+        const copyAllBtn = document.getElementById('copy-all-btn');
+        const copyToast = document.getElementById('copy-toast');
+        const limitModal = document.getElementById('limit-modal');
+        const premiumModal = document.getElementById('premium-modal');
+        const premiumIcon = document.getElementById('premium-icon');
+        const closeModalBtns = document.querySelectorAll('.modal-close-btn, .modal-overlay .btn[data-modal]');
+        const USAGE_LIMIT = 20;
+        const usage = {
+            count: 0,
+            date: new Date().toISOString().slice(0, 10)
+        };
+
+        function checkUsage() {
+            const storedUsage = JSON.parse(localStorage.getItem('hashtagGeneratorUsage'));
+            const today = new Date().toISOString().slice(0, 10);
+            if (storedUsage && storedUsage.date === today) {
+                usage.count = storedUsage.count;
+            } else {
+                usage.count = 0;
+                localStorage.setItem('hashtagGeneratorUsage', JSON.stringify({ count: 0, date: today }));
+            }
+            updateUsageDisplay();
+        }
+
+        function incrementUsage() {
+            usage.count++;
+            usage.date = new Date().toISOString().slice(0, 10);
+            localStorage.setItem('hashtagGeneratorUsage', JSON.stringify(usage));
+            updateUsageDisplay();
+        }
+
+        function updateUsageDisplay() {
+            const usesLeft = Math.max(0, USAGE_LIMIT - usage.count);
+            usageCounterEl.textContent = `${usesLeft}/${USAGE_LIMIT} uses left today`;
+        }
+
+        /**
+         * **IMPROVED HASHTAG GENERATION LOGIC**
+         * This function now generates more relevant and structured hashtags.
+         */
+        function generateHashtags(keyword, platform) {
+            const sanitizedKeyword = keyword.replace(/\s+/g, '').toLowerCase();
+            if (!sanitizedKeyword) return [];
+
+            const hashtags = new Set();
+            
+            // Tier 1: Core & High-Relevance Tags
+            hashtags.add(`#${sanitizedKeyword}`);
+            hashtags.add(`#${sanitizedKeyword}life`);
+            hashtags.add(`#${sanitizedKeyword}community`);
+            hashtags.add(`#${sanitizedKeyword}inspiration`);
+            hashtags.add(`#${sanitizedKeyword}tips`);
+
+            // Tier 2: Contextual & Niche Tags
+            const highValueSuffixes = ['gram', 'love', 'style', 'goals', 'vibes', 'hacks', 'guide', 'daily'];
+            highValueSuffixes.forEach(suffix => {
+                if (hashtags.size < 15) hashtags.add(`#${sanitizedKeyword}${suffix}`);
+            });
+
+            // Tier 3: Broader Topic Tags
+            const prefixes = ['discover', 'explore', 'viral', 'trending'];
+            prefixes.forEach(prefix => {
+                if (hashtags.size < 18) hashtags.add(`#${prefix}${sanitizedKeyword}`);
+            });
+
+            // Tier 4: Relevant Platform-Specific Tags
+            const platformTags = {
+                instagram: ['reels', 'explorepage'],
+                tiktok: ['fyp', 'viralvideo'],
+                x: ['trendingnow'],
+                youtube: ['youtubeshorts', 'subscribe'],
+                linkedin: ['professionaldevelopment', 'networking'],
+                facebook: ['viralpost'],
+                threads: ['threadsapp']
+            };
+            if(platformTags[platform]) {
+                platformTags[platform].forEach(tag => hashtags.add(`#${tag}`));
+            }
+
+            // Tier 5: Filler with more generic but popular tags
+            const genericSuffixes = ['now', '2024', 'today', 'world'];
+            while (hashtags.size < 20 && genericSuffixes.length > 0) {
+                 hashtags.add(`#${sanitizedKeyword}${genericSuffixes.pop()}`);
+            }
+
+            // Shuffle and return exactly 20
+            return Array.from(hashtags).sort(() => 0.5 - Math.random()).slice(0, 20);
+        }
+
+        function displayHashtags(hashtags) {
+            hashtagsGrid.innerHTML = '';
+            if (hashtags.length === 0) {
+                resultsContainer.classList.remove('visible');
+                return;
+            }
+            const totalChars = hashtags.join(' ').length;
+            charCounterEl.textContent = `(${totalChars} chars)`;
+            hashtags.forEach((tag, index) => {
+                const card = document.createElement('div');
+                card.className = 'hashtag-card';
+                card.style.animationDelay = `${index * 30}ms`;
+                const checkboxId = `tag-${index}`;
+                card.innerHTML = `<input type="checkbox" id="${checkboxId}" checked="checked" /><label for="${checkboxId}">${tag}</label>`;
+                card.addEventListener('click', (e) => {
+                    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'LABEL') {
+                        card.querySelector('input[type="checkbox"]').checked = !card.querySelector('input[type="checkbox"]').checked;
+                    }
+                });
+                hashtagsGrid.appendChild(card);
+            });
+            resultsContainer.classList.add('visible');
+        }
+        
+        function showToast(message) {
+            copyToast.textContent = message;
+            copyToast.classList.add('show');
+            setTimeout(() => { copyToast.classList.remove('show'); }, 3000);
+        }
+
+        generateBtn.addEventListener('click', () => {
+            if (usage.count >= USAGE_LIMIT) {
+                limitModal.classList.add('visible');
+                return;
+            }
+            const keyword = keywordInput.value.trim();
+            if (!keyword) {
+                showToast('Please enter a keyword.');
+                return;
+            }
+            const platform = platformSelect.value;
+            generateBtn.textContent = 'Generating...';
+            generateBtn.disabled = true;
+            setTimeout(() => {
+                const hashtags = generateHashtags(keyword, platform);
+                displayHashtags(hashtags);
+                incrementUsage();
+                generateBtn.textContent = 'Generate';
+                generateBtn.disabled = false;
+            }, 500);
+        });
+
+        copyAllBtn.addEventListener('click', () => {
+            const allHashtags = Array.from(hashtagsGrid.querySelectorAll('label')).map(label => label.textContent).join(' ');
+            if (!allHashtags) { showToast('Nothing to copy!'); return; }
+            navigator.clipboard.writeText(allHashtags).then(() => showToast('All hashtags copied!'));
+        });
+
+        copySelectedBtn.addEventListener('click', () => {
+            const selectedHashtags = Array.from(hashtagsGrid.querySelectorAll('input:checked')).map(cb => cb.nextElementSibling.textContent).join(' ');
+            if (!selectedHashtags) { showToast('No hashtags selected!'); return; }
+            navigator.clipboard.writeText(selectedHashtags).then(() => showToast('Selected hashtags copied!'));
+        });
+
+        premiumIcon.addEventListener('click', () => premiumModal.classList.add('visible'));
+
+        closeModalBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const modalId = btn.getAttribute('data-modal');
+                document.getElementById(modalId).classList.remove('visible');
+            });
+        });
+        
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    overlay.classList.remove('visible');
+                }
+            });
+        });
+        
+        checkUsage();
+    });
+    //]]>
+    </script>
+
+</body>
+</html>
