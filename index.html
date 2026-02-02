@@ -6,21 +6,20 @@
     <title>Viral Hashtag Generator</title>
 
     <style>
-        /* --- Global Styles & Fonts (Blogger Safe) --- */
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&amp;display=swap');
+        /* --- Global Styles & Fonts --- */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
         :root {
-            --primary-color: #ff3cac;
-            --secondary-color: #784ba0;
-            --accent-color: #2b86c5;
-            --bg-color-start: #667eea;
-            --bg-color-end: #764ba2;
-            --text-color: #ffffff;
-            --card-bg: rgba(255, 255, 255, 0.1);
-            --card-hover-bg: rgba(255, 255, 255, 0.2);
-            --border-color: rgba(255, 255, 255, 0.25);
-            --shadow-color: rgba(0, 0, 0, 0.2);
-            --success-color: #4CAF50;
+            /* Premium Dark Theme Palette */
+            --bg-body: #0f172a;       /* Deep Slate Blue */
+            --bg-card: #1e293b;       /* Lighter Slate for card */
+            --bg-input: #334155;      /* Input background */
+            --primary-accent: #38bdf8; /* Cyan/Sky Blue for accents */
+            --primary-gradient: linear-gradient(135deg, #3b82f6, #8b5cf6); /* Blue to Purple */
+            --text-main: #ffffff;     /* Pure White */
+            --text-muted: #94a3b8;    /* Soft Grey */
+            --border-color: #475569;
+            --shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
         }
 
         * {
@@ -31,64 +30,74 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
-            background-size: 400% 400%;
-            color: var(--text-color);
+            background-color: var(--bg-body);
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 2rem 1rem;
-            overflow-x: hidden;
-            animation: gradientAnimation 15s ease infinite;
-        }
-        
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
+        /* --- Main Container --- */
         .container {
             width: 100%;
             max-width: 800px;
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-radius: 20px;
+            background: var(--bg-card);
+            border-radius: 24px;
             border: 1px solid var(--border-color);
-            padding: 2rem;
-            box-shadow: 0 8px 32px 0 var(--shadow-color);
-            animation: fadeIn 0.8s ease-out;
+            padding: 3rem 2rem;
+            box-shadow: var(--shadow);
             position: relative;
+            overflow: hidden;
+        }
+
+        /* Subtle Glow Effect behind container */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        main, header {
+            position: relative;
+            z-index: 1;
         }
 
         header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         header h1 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             font-weight: 700;
-            letter-spacing: 1px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            line-height: 1.2;
+            /* No gradient text to ensure visibility */
+            text-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+        }
+
+        header h1 span {
+            color: var(--primary-accent); /* Highlight specific word */
         }
 
         header p {
             font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
+            color: var(--text-muted);
+            font-weight: 300;
         }
 
-        /* --- IMPROVED RESPONSIVE INPUT SECTION --- */
+        /* --- Input Section --- */
         .input-area {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
             margin-bottom: 2rem;
         }
         
@@ -96,72 +105,82 @@
             display: grid;
             grid-template-columns: 3fr 2fr auto;
             gap: 1rem;
-            align-items: stretch; /* Makes items same height */
         }
 
         #keyword-input, #platform-select {
             width: 100%;
-            padding: 12px 15px;
+            padding: 16px 20px;
             font-size: 1rem;
-            color: var(--text-color);
-            background: var(--card-bg);
+            color: var(--text-main);
+            background: var(--bg-input);
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             transition: all 0.3s ease;
+            font-family: inherit;
         }
 
-        #keyword-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        #keyword-input::placeholder { color: var(--text-muted); opacity: 0.7; }
 
         #keyword-input:focus, #platform-select:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(255, 60, 172, 0.3);
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15);
+            background: #475569;
         }
 
-        #platform-select option {
-            background: var(--bg-color-end);
-            color: var(--text-color);
+        #platform-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
         }
 
         .btn {
-            padding: 12px 20px;
+            padding: 0 24px;
             font-size: 1rem;
             font-weight: 600;
-            color: var(--text-color);
+            color: white;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         #generate-btn {
-            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-            box-shadow: 0 4px 15px 0 rgba(255, 60, 172, 0.4);
-            height: 100%; /* Ensures button takes full height of the grid row */
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            height: 100%;
         }
 
         #generate-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 25px 0 rgba(255, 60, 172, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
             filter: brightness(1.1);
         }
-
-        .copy-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 1.5rem;
+        
+        #generate-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
         }
-        
-        .copy-btn { background-color: var(--accent-color); }
-        
+
+        /* --- Results Area --- */
         #results-container {
             margin-top: 1rem;
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease, transform 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            padding: 1.5rem;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
         
         #results-container.visible {
@@ -171,113 +190,156 @@
 
         .results-header {
             display: flex;
-            justify-content: center;
-            align-items: baseline;
-            gap: 10px;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 1.5rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .results-header h2 { font-weight: 600; margin: 0; }
+        .results-header h2 { 
+            font-size: 1.2rem; 
+            font-weight: 600; 
+            color: var(--primary-accent);
+        }
         
         #char-counter {
-            font-size: 0.9rem;
-            font-weight: 300;
-            opacity: 0.8;
-            background: var(--card-bg);
-            padding: 2px 8px;
-            border-radius: 5px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
         }
 
         #hashtags-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .hashtag-card {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
-            background: var(--card-hover-bg);
-            padding: 10px 15px;
-            border-radius: 8px;
+            gap: 8px;
+            background: var(--bg-input);
+            padding: 8px 14px;
+            border-radius: 50px; /* Pill shape */
             cursor: pointer;
-            transition: transform 0.2s ease, background-color 0.2s ease;
-            animation: popIn 0.5s ease-out forwards;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            animation: fadeInTag 0.4s ease-out forwards;
             opacity: 0;
         }
 
         .hashtag-card:hover {
-            transform: scale(1.05);
-            background-color: rgba(255, 255, 255, 0.3);
+            border-color: var(--primary-accent);
+            background: #475569;
+            transform: translateY(-2px);
         }
         
+        /* Custom Checkbox */
         .hashtag-card input[type="checkbox"] {
-            -webkit-appearance: none; appearance: none;
-            background-color: transparent; margin: 0;
-            color: currentColor; width: 1.15em; height: 1.15em;
-            border: 0.15em solid currentColor; border-radius: 0.25em;
-            display: grid; place-content: center; flex-shrink: 0;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--text-muted);
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
         }
 
-        .hashtag-card input[type="checkbox"]::before {
-            content: ""; width: 0.65em; height: 0.65em;
-            transform: scale(0); transition: 120ms transform ease-in-out;
-            box-shadow: inset 1em 1em var(--primary-color);
-            transform-origin: bottom left;
-            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        .hashtag-card input[type="checkbox"]:checked {
+            background-color: var(--primary-accent);
+            border-color: var(--primary-accent);
         }
 
-        .hashtag-card input[type="checkbox"]:checked::before { transform: scale(1); }
-        .hashtag-card label { font-size: 0.95rem; word-break: break-all; cursor: pointer; }
-        .note { text-align: center; font-size: 0.85rem; margin-top: 1.5rem; opacity: 0.7; }
+        .hashtag-card label { 
+            font-size: 0.9rem; 
+            color: var(--text-main);
+            cursor: pointer; 
+            user-select: none;
+        }
+
+        .copy-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
         
-        .toast {
-            position: fixed; bottom: -100px; left: 50%;
-            transform: translateX(-50%); background-color: var(--success-color);
-            color: white; padding: 12px 25px; border-radius: 25px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-weight: 600;
-            transition: bottom 0.5s ease-in-out; z-index: 2000;
+        .copy-btn { 
+            background-color: var(--bg-input);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
         }
-        .toast.show { bottom: 30px; }
 
+        .copy-btn:hover {
+            background-color: var(--primary-accent);
+            border-color: var(--primary-accent);
+            color: #0f172a; /* Dark text on bright button */
+        }
+        
+        .note { 
+            text-align: center; 
+            font-size: 0.8rem; 
+            color: var(--text-muted); 
+            margin-top: 1rem; 
+            font-style: italic;
+        }
+
+        /* --- Footer & Toast --- */
         .app-footer {
             width: 100%;
             max-width: 800px;
-            margin-top: 2rem;
+            margin-top: 3rem;
             text-align: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.5rem;
         }
+
+        .footer-credit { 
+            font-size: 0.9rem; 
+            color: var(--text-muted); 
+        }
+        
+        .footer-credit a {
+            color: var(--primary-accent);
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+        .footer-credit a:hover { opacity: 0.8; text-decoration: underline; }
+
+        .toast {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(100px); 
+            background-color: #10b981; /* Success Green */
+            color: white; 
+            padding: 12px 30px; 
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+            font-weight: 500;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            z-index: 2000;
+            opacity: 0;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* --- Ad Container --- */
         .ad-container {
             margin-bottom: 1rem;
             display: flex;
             justify-content: center;
-            min-height: 100px; /* Placeholder height for ad */
+            min-height: 100px; 
         }
-        .footer-credit { font-size: 0.9rem; opacity: 0.7; }
-        .footer-credit a {
-            color: var(--text-color);
-            font-weight: 600;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        .footer-credit a:hover { color: var(--primary-color); }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 
-        /* --- RESPONSIVE MEDIA QUERIES --- */
+        @keyframes fadeInTag { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+        /* --- Responsive --- */
         @media (max-width: 768px) {
-            body { padding: 1rem 0.5rem; }
-            .container { padding: 1.5rem; margin: 0 0.5rem; }
-            header h1 { font-size: 2rem; }
-            .controls-wrapper {
-                grid-template-columns: 1fr; /* Stack controls vertically on mobile */
-            }
-        }
-        
-        @media (max-width: 480px) {
-            #hashtags-grid { grid-template-columns: 1fr; }
-            .copy-buttons { flex-direction: column; }
+            .container { padding: 2rem 1.5rem; }
+            header h1 { font-size: 2.2rem; }
+            .controls-wrapper { grid-template-columns: 1fr; }
+            #generate-btn { padding: 16px; margin-top: 5px; }
         }
     </style>
 </head>
@@ -285,15 +347,14 @@
 
     <div class="container">
         <header>
-            <h1>Viral Hashtag Generator</h1>
-            <p>Enter a keyword to get viral hashtags for your social media.</p>
+            <h1>Viral <span>Hashtag</span> Generator</h1>
+            <p>Enter a keyword to generate high-converting tags.</p>
         </header>
 
         <main>
-            <!-- IMPROVED HTML STRUCTURE FOR INPUTS -->
             <div class="input-area">
                 <div class="controls-wrapper">
-                    <input type="text" id="keyword-input" placeholder="e.g., 'digital marketing'" />
+                    <input type="text" id="keyword-input" placeholder="Enter keyword (e.g. 'Fitness')" />
                     <select id="platform-select">
                         <option value="instagram">Instagram</option>
                         <option value="tiktok">TikTok</option>
@@ -302,7 +363,6 @@
                         <option value="facebook">Facebook</option>
                         <option value="linkedin">LinkedIn</option>
                         <option value="threads">Threads</option>
-                        <!-- Added New Platforms -->
                         <option value="pinterest">Pinterest</option>
                         <option value="snapchat">Snapchat</option>
                         <option value="reddit">Reddit</option>
@@ -316,27 +376,25 @@
             <div id="results-container">
                 <div class="results-header">
                     <h2>Generated Hashtags</h2>
-                    <span id="char-counter"></span>
+                    <span id="char-counter">(0 chars)</span>
                 </div>
                 <div id="hashtags-grid"></div>
                 <div class="copy-buttons">
                     <button id="copy-selected-btn" class="btn copy-btn">Copy Selected</button>
                     <button id="copy-all-btn" class="btn copy-btn">Copy All</button>
                 </div>
-                <p class="note">You can copy and paste hashtags on any social media platform.</p>
+                <p class="note">Click tags to select/deselect specific ones.</p>
             </div>
         </main>
     </div>
 
     <div id="copy-toast" class="toast"></div>
     
-    <!-- Footer -->
     <footer class="app-footer">
         <div class="ad-container">
             <script async="async" data-cfasync="false" src="//pl27005060.profitableratecpm.com/c809c87dc250c2c46329a7547968100b/invoke.js"></script>
             <div id="container-c809c87dc250c2c46329a7547968100b"></div>
         </div>
-        <!-- Updated Link Here -->
         <p class="footer-credit">A Product by <a href="https://bio.link/plaxora" target="_blank">Plaxora</a></p>
     </footer>
 
@@ -362,46 +420,53 @@
 
             const hashtags = new Set();
             
+            // Core variations
             hashtags.add(`#${sanitizedKeyword}`);
             hashtags.add(`#${sanitizedKeyword}life`);
             hashtags.add(`#${sanitizedKeyword}community`);
             hashtags.add(`#${sanitizedKeyword}inspiration`);
-            hashtags.add(`#${sanitizedKeyword}tips`);
+            hashtags.add(`#${sanitizedKeyword}daily`);
 
-            const highValueSuffixes = ['gram', 'love', 'style', 'goals', 'vibes', 'hacks', 'guide', 'daily'];
+            // Suffixes based on virality
+            const highValueSuffixes = ['gram', 'love', 'style', 'goals', 'vibes', 'hacks', 'tips', 'guide'];
             highValueSuffixes.forEach(suffix => {
                 if (hashtags.size < 15) hashtags.add(`#${sanitizedKeyword}${suffix}`);
             });
 
-            const prefixes = ['discover', 'explore', 'viral', 'trending'];
+            // Prefixes
+            const prefixes = ['discover', 'explore', 'viral', 'trending', 'bestof'];
             prefixes.forEach(prefix => {
                 if (hashtags.size < 18) hashtags.add(`#${prefix}${sanitizedKeyword}`);
             });
 
+            // Platform Specific Logic
             const platformTags = {
-                instagram: ['reels', 'explorepage'],
-                tiktok: ['fyp', 'viralvideo'],
-                x: ['trendingnow'],
-                youtube: ['youtubeshorts', 'subscribe'],
-                linkedin: ['professionaldevelopment', 'networking'],
-                facebook: ['viralpost'],
-                threads: ['threadsapp'],
-                pinterest: ['pinterestideas', 'aesthetic', 'pinithard'],
-                snapchat: ['snapchatfilters', 'story', 'snap'],
-                reddit: ['discussion', 'community'],
-                twitch: ['streamer', 'live', 'gaming'],
-                tumblr: ['tumblr', 'aesthetic', 'art']
+                instagram: ['reels', 'explorepage', 'instagood', 'photooftheday'],
+                tiktok: ['fyp', 'viralvideo', 'tiktoktrend', 'foryou'],
+                x: ['trendingnow', 'twitter', 'viral'],
+                youtube: ['youtubeshorts', 'subscribe', 'vlog', 'contentcreator'],
+                linkedin: ['professionaldevelopment', 'networking', 'business', 'career'],
+                facebook: ['viralpost', 'facebookwatch'],
+                threads: ['threadsapp', 'threads'],
+                pinterest: ['pinterestideas', 'aesthetic', 'pinithard', 'inspo'],
+                snapchat: ['snapchatfilters', 'story', 'snapcode'],
+                reddit: ['discussion', 'community', 'reddit'],
+                twitch: ['streamer', 'live', 'gaming', 'twitchtv'],
+                tumblr: ['tumblr', 'aesthetic', 'art', 'blog']
             };
+            
             if(platformTags[platform]) {
                 platformTags[platform].forEach(tag => hashtags.add(`#${tag}`));
             }
 
-            const genericSuffixes = ['now', '2024', 'today', 'world'];
-            while (hashtags.size < 20 && genericSuffixes.length > 0) {
+            // Fillers if needed
+            const genericSuffixes = ['now', '2025', 'today', 'world', 'moment'];
+            while (hashtags.size < 25 && genericSuffixes.length > 0) {
                  hashtags.add(`#${sanitizedKeyword}${genericSuffixes.pop()}`);
             }
 
-            return Array.from(hashtags).sort(() => 0.5 - Math.random()).slice(0, 20);
+            // Return random mix
+            return Array.from(hashtags).sort(() => 0.5 - Math.random()).slice(0, 25);
         }
 
         function displayHashtags(hashtags) {
@@ -410,22 +475,42 @@
                 resultsContainer.classList.remove('visible');
                 return;
             }
-            const totalChars = hashtags.join(' ').length;
-            charCounterEl.textContent = `(${totalChars} chars)`;
+            
             hashtags.forEach((tag, index) => {
                 const card = document.createElement('div');
                 card.className = 'hashtag-card';
-                card.style.animationDelay = `${index * 30}ms`;
+                card.style.animationDelay = `${index * 20}ms`;
+                
                 const checkboxId = `tag-${index}`;
-                card.innerHTML = `<input type="checkbox" id="${checkboxId}" checked="checked" /><label for="${checkboxId}">${tag}</label>`;
+                // Using checkbox logic inside the pill
+                card.innerHTML = `
+                    <input type="checkbox" id="${checkboxId}" checked="checked" />
+                    <label for="${checkboxId}">${tag}</label>
+                `;
+                
+                // Toggle checkbox on card click (delegation)
                 card.addEventListener('click', (e) => {
-                    if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'LABEL') {
-                        card.querySelector('input[type="checkbox"]').checked = !card.querySelector('input[type="checkbox"]').checked;
+                    if (e.target.tagName !== 'INPUT') {
+                        const checkbox = card.querySelector('input');
+                        checkbox.checked = !checkbox.checked;
+                        updateCharCount();
+                    } else {
+                        updateCharCount();
                     }
                 });
+                
                 hashtagsGrid.appendChild(card);
             });
+            
+            updateCharCount();
             resultsContainer.classList.add('visible');
+        }
+
+        function updateCharCount() {
+            const selectedHashtags = Array.from(hashtagsGrid.querySelectorAll('input:checked'))
+                                          .map(cb => cb.nextElementSibling.textContent);
+            const totalChars = selectedHashtags.join(' ').length;
+            charCounterEl.textContent = `(${selectedHashtags.length} tags, ${totalChars} chars)`;
         }
         
         function showToast(message) {
@@ -438,17 +523,21 @@
             const keyword = keywordInput.value.trim();
             if (!keyword) {
                 showToast('Please enter a keyword.');
+                keywordInput.focus();
                 return;
             }
+            
             const platform = platformSelect.value;
             generateBtn.textContent = 'Generating...';
             generateBtn.disabled = true;
+            
+            // Simulate processing time for "Premium" feel
             setTimeout(() => {
                 const hashtags = generateHashtags(keyword, platform);
                 displayHashtags(hashtags);
                 generateBtn.textContent = 'Generate';
                 generateBtn.disabled = false;
-            }, 500);
+            }, 600);
         });
 
         copyAllBtn.addEventListener('click', () => {
