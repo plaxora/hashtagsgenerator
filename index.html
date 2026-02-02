@@ -21,7 +21,6 @@
             --border-color: rgba(255, 255, 255, 0.25);
             --shadow-color: rgba(0, 0, 0, 0.2);
             --success-color: #4CAF50;
-            --premium-star-color: #FFD700;
         }
 
         * {
@@ -68,7 +67,6 @@
         header {
             text-align: center;
             margin-bottom: 2rem;
-            padding-right: 40px;
         }
 
         header h1 {
@@ -84,21 +82,6 @@
         header p {
             font-size: 1.1rem;
             color: rgba(255, 255, 255, 0.8);
-        }
-        
-        #premium-icon {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 2rem;
-            color: var(--premium-star-color);
-            cursor: pointer;
-            transition: transform 0.3s ease, text-shadow 0.3s ease;
-        }
-        
-        #premium-icon:hover {
-            transform: scale(1.2) rotate(15deg);
-            text-shadow: 0 0 15px var(--premium-star-color);
         }
 
         /* --- IMPROVED RESPONSIVE INPUT SECTION --- */
@@ -174,12 +157,6 @@
         
         .copy-btn { background-color: var(--accent-color); }
         
-        #usage-counter {
-            text-align: center;
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
         #results-container {
             margin-top: 1rem;
             opacity: 0;
@@ -255,31 +232,6 @@
         .hashtag-card label { font-size: 0.95rem; word-break: break-all; cursor: pointer; }
         .note { text-align: center; font-size: 0.85rem; margin-top: 1.5rem; opacity: 0.7; }
         
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7); display: flex;
-            justify-content: center; align-items: center; z-index: 1000;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .modal-overlay.visible { opacity: 1; visibility: visible; }
-        .modal-content {
-            background: linear-gradient(135deg, var(--bg-color-end), var(--bg-color-start));
-            padding: 2rem 3rem; border-radius: 15px; text-align: center;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.4); transform: scale(0.9);
-            transition: transform 0.3s ease; max-width: 90%; width: 500px;
-            position: relative;
-        }
-        .modal-overlay.visible .modal-content { transform: scale(1); }
-        .modal-content h3 { font-size: 1.8rem; margin-bottom: 1rem; color: var(--premium-star-color); }
-        .modal-content p { margin-bottom: 1.5rem; line-height: 1.6; }
-        .modal-close-btn {
-            position: absolute; top: 15px; right: 15px;
-            font-size: 2rem; color: white; cursor: pointer;
-            line-height: 1; transition: transform 0.2s;
-        }
-        .modal-close-btn:hover { transform: scale(1.2); }
-        
         .toast {
             position: fixed; bottom: -100px; left: 50%;
             transform: translateX(-50%); background-color: var(--success-color);
@@ -318,7 +270,6 @@
             body { padding: 1rem 0.5rem; }
             .container { padding: 1.5rem; margin: 0 0.5rem; }
             header h1 { font-size: 2rem; }
-            header { padding-right: 0; }
             .controls-wrapper {
                 grid-template-columns: 1fr; /* Stack controls vertically on mobile */
             }
@@ -327,8 +278,6 @@
         @media (max-width: 480px) {
             #hashtags-grid { grid-template-columns: 1fr; }
             .copy-buttons { flex-direction: column; }
-            .modal-content { padding: 2rem 1.5rem; }
-            #premium-icon { top: 15px; right: 15px; font-size: 1.5rem; }
         }
     </style>
 </head>
@@ -339,8 +288,6 @@
             <h1>Viral Hashtag Generator</h1>
             <p>Enter a keyword to get viral hashtags for your social media.</p>
         </header>
-
-        <div id="premium-icon" title="Get Premium">★</div>
 
         <main>
             <!-- IMPROVED HTML STRUCTURE FOR INPUTS -->
@@ -355,10 +302,15 @@
                         <option value="facebook">Facebook</option>
                         <option value="linkedin">LinkedIn</option>
                         <option value="threads">Threads</option>
+                        <!-- Added New Platforms -->
+                        <option value="pinterest">Pinterest</option>
+                        <option value="snapchat">Snapchat</option>
+                        <option value="reddit">Reddit</option>
+                        <option value="twitch">Twitch</option>
+                        <option value="tumblr">Tumblr</option>
                     </select>
                     <button id="generate-btn" class="btn">Generate</button>
                 </div>
-                <div id="usage-counter">20/20 uses left today</div>
             </div>
 
             <div id="results-container">
@@ -376,24 +328,6 @@
         </main>
     </div>
 
-    <!-- Modals -->
-    <div id="limit-modal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="modal-close-btn" data-modal="limit-modal">&times;</span>
-            <h3>Free Limit Reached!</h3>
-            <p>You have used all your free generations for today. Please try again tomorrow or upgrade for unlimited access.</p>
-            <button class="btn" data-modal="limit-modal">Got it</button>
-        </div>
-    </div>
-    <div id="premium-modal" class="modal-overlay">
-        <div class="modal-content">
-            <span class="modal-close-btn" data-modal="premium-modal">&times;</span>
-            <h3>✨ Unlock Premium Features! ✨</h3>
-            <p>To get the premium version with unlimited usage and advanced features, please contact us:</p>
-            <p><strong>Whatsapp:</strong> +8801945220851<br/>
-               <strong>Email:</strong> infoplaxora@gmail.com</p>
-        </div>
-    </div>
     <div id="copy-toast" class="toast"></div>
     
     <!-- Footer -->
@@ -402,7 +336,8 @@
             <script async="async" data-cfasync="false" src="//pl27005060.profitableratecpm.com/c809c87dc250c2c46329a7547968100b/invoke.js"></script>
             <div id="container-c809c87dc250c2c46329a7547968100b"></div>
         </div>
-        <p class="footer-credit">A Product by <a href="http://bio.link/plaxora/" target="_blank">Plaxora</a></p>
+        <!-- Updated Link Here -->
+        <p class="footer-credit">A Product by <a href="https://bio.link/plaxora" target="_blank">Plaxora</a></p>
     </footer>
 
     <!-- Notification Ad Code -->
@@ -414,46 +349,12 @@
         const keywordInput = document.getElementById('keyword-input');
         const platformSelect = document.getElementById('platform-select');
         const generateBtn = document.getElementById('generate-btn');
-        const usageCounterEl = document.getElementById('usage-counter');
         const resultsContainer = document.getElementById('results-container');
         const hashtagsGrid = document.getElementById('hashtags-grid');
         const charCounterEl = document.getElementById('char-counter');
         const copySelectedBtn = document.getElementById('copy-selected-btn');
         const copyAllBtn = document.getElementById('copy-all-btn');
         const copyToast = document.getElementById('copy-toast');
-        const limitModal = document.getElementById('limit-modal');
-        const premiumModal = document.getElementById('premium-modal');
-        const premiumIcon = document.getElementById('premium-icon');
-        const closeModalBtns = document.querySelectorAll('.modal-close-btn, .modal-overlay .btn[data-modal]');
-        const USAGE_LIMIT = 20;
-        const usage = {
-            count: 0,
-            date: new Date().toISOString().slice(0, 10)
-        };
-
-        function checkUsage() {
-            const storedUsage = JSON.parse(localStorage.getItem('hashtagGeneratorUsage'));
-            const today = new Date().toISOString().slice(0, 10);
-            if (storedUsage && storedUsage.date === today) {
-                usage.count = storedUsage.count;
-            } else {
-                usage.count = 0;
-                localStorage.setItem('hashtagGeneratorUsage', JSON.stringify({ count: 0, date: today }));
-            }
-            updateUsageDisplay();
-        }
-
-        function incrementUsage() {
-            usage.count++;
-            usage.date = new Date().toISOString().slice(0, 10);
-            localStorage.setItem('hashtagGeneratorUsage', JSON.stringify(usage));
-            updateUsageDisplay();
-        }
-
-        function updateUsageDisplay() {
-            const usesLeft = Math.max(0, USAGE_LIMIT - usage.count);
-            usageCounterEl.textContent = `${usesLeft}/${USAGE_LIMIT} uses left today`;
-        }
 
         function generateHashtags(keyword, platform) {
             const sanitizedKeyword = keyword.replace(/\s+/g, '').toLowerCase();
@@ -484,7 +385,12 @@
                 youtube: ['youtubeshorts', 'subscribe'],
                 linkedin: ['professionaldevelopment', 'networking'],
                 facebook: ['viralpost'],
-                threads: ['threadsapp']
+                threads: ['threadsapp'],
+                pinterest: ['pinterestideas', 'aesthetic', 'pinithard'],
+                snapchat: ['snapchatfilters', 'story', 'snap'],
+                reddit: ['discussion', 'community'],
+                twitch: ['streamer', 'live', 'gaming'],
+                tumblr: ['tumblr', 'aesthetic', 'art']
             };
             if(platformTags[platform]) {
                 platformTags[platform].forEach(tag => hashtags.add(`#${tag}`));
@@ -529,10 +435,6 @@
         }
 
         generateBtn.addEventListener('click', () => {
-            if (usage.count >= USAGE_LIMIT) {
-                limitModal.classList.add('visible');
-                return;
-            }
             const keyword = keywordInput.value.trim();
             if (!keyword) {
                 showToast('Please enter a keyword.');
@@ -544,7 +446,6 @@
             setTimeout(() => {
                 const hashtags = generateHashtags(keyword, platform);
                 displayHashtags(hashtags);
-                incrementUsage();
                 generateBtn.textContent = 'Generate';
                 generateBtn.disabled = false;
             }, 500);
@@ -561,25 +462,6 @@
             if (!selectedHashtags) { showToast('No hashtags selected!'); return; }
             navigator.clipboard.writeText(selectedHashtags).then(() => showToast('Selected hashtags copied!'));
         });
-
-        premiumIcon.addEventListener('click', () => premiumModal.classList.add('visible'));
-
-        closeModalBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const modalId = btn.getAttribute('data-modal');
-                document.getElementById(modalId).classList.remove('visible');
-            });
-        });
-        
-        document.querySelectorAll('.modal-overlay').forEach(overlay => {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) {
-                    overlay.classList.remove('visible');
-                }
-            });
-        });
-        
-        checkUsage();
     });
     //]]>
     </script>
